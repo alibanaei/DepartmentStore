@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -10,11 +11,19 @@ class ProductTest extends TestCase
 {
     use RefreshDatabase;
 
+    private User $user;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->user = User::factory()->create();
+    }
 
     public function test_api_products_list(): void
     {
         $products = Product::factory(5)->create();
-        $response = $this->getJson('/api/products');
+        $response = $this->actingAs($this->user)->getJson('/api/products');
 
         $response->assertJson(['result' => true, 'data' => $products->toArray()]);
     }
@@ -26,7 +35,7 @@ class ProductTest extends TestCase
             'cost' => '10000'
         ];
 
-        $response = $this->postJson('/api/products', $product);;
+        $response = $this->actingAs($this->user)->postJson('/api/products', $product);;
 
         $response->assertJsonValidationErrors(['name'])
             ->assertStatus(422);
@@ -41,7 +50,7 @@ class ProductTest extends TestCase
             'cost' => 100
         ];
 
-        $response = $this->postJson('/api/products', $product);;
+        $response = $this->actingAs($this->user)->postJson('/api/products', $product);;
 
         $response->assertJson(['result' => false])
             ->assertStatus(400);
@@ -56,7 +65,7 @@ class ProductTest extends TestCase
             'cost' => 10000
         ];
 
-        $response = $this->postJson('/api/products', $product);;
+        $response = $this->actingAs($this->user)->postJson('/api/products', $product);;
 
         $response->assertJson(['result' => true])
             ->assertStatus(200);
@@ -68,7 +77,7 @@ class ProductTest extends TestCase
     {
         $productId = 1;
 
-        $response = $this->getJson('/api/products/' . $productId);
+        $response = $this->actingAs($this->user)->getJson('/api/products/' . $productId);
 
         $response->assertJson(['result' => false])
             ->assertStatus(404);
@@ -78,7 +87,7 @@ class ProductTest extends TestCase
     {
         $product = Product::factory()->create();
 
-        $response = $this->getJson('/api/products/' . $product->id);
+        $response = $this->actingAs($this->user)->getJson('/api/products/' . $product->id);
 
         $response->assertJson(['result' => true, 'data' => $product->toArray()])
             ->assertStatus(200);
@@ -89,7 +98,7 @@ class ProductTest extends TestCase
     {
         $productId = 1;
 
-        $response = $this->putJson('/api/products/' . $productId, []);
+        $response = $this->actingAs($this->user)->putJson('/api/products/' . $productId, []);
 
         $response->assertJson(['result' => false])
             ->assertStatus(404);
@@ -103,7 +112,7 @@ class ProductTest extends TestCase
 
         $newCost = $cost * 10;
 
-        $response = $this->putJson('/api/products/' . $product->id, ['cost' => $newCost]);
+        $response = $this->actingAs($this->user)->putJson('/api/products/' . $product->id, ['cost' => $newCost]);
 
         $product->cost = $newCost;
 
@@ -118,7 +127,7 @@ class ProductTest extends TestCase
     {
         $productId = 1;
 
-        $response = $this->deleteJson('/api/products/' . $productId);
+        $response = $this->actingAs($this->user)->deleteJson('/api/products/' . $productId);
 
         $response->assertJson(['result' => false])
             ->assertStatus(404);
@@ -129,7 +138,7 @@ class ProductTest extends TestCase
     {
         $product = Product::factory()->create();
 
-        $response = $this->deleteJson('/api/products/' . $product->id);
+        $response = $this->actingAs($this->user)->deleteJson('/api/products/' . $product->id);
 
         $response->assertJson(['result' => true])
             ->assertStatus(200);
