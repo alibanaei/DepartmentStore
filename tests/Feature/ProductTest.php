@@ -28,7 +28,6 @@ class ProductTest extends TestCase
         $this->admin->assignRole(RoleAndPermissionsEnum::Role_Admin->value);
     }
 
-
     public function test_api_products_list_unauthenticated_user(): void
     {
         $response = $this->getJson('/api/products');
@@ -53,10 +52,10 @@ class ProductTest extends TestCase
     {
         $product = [
             'name' => '',
-            'cost' => '10000'
+            'cost' => '10000',
         ];
 
-        $response = $this->actingAs($this->admin)->postJson('/api/products', $product);;
+        $response = $this->actingAs($this->admin)->postJson('/api/products', $product);
 
         $response->assertJsonValidationErrors(['name'])
             ->assertStatus(422);
@@ -68,10 +67,10 @@ class ProductTest extends TestCase
     {
         $product = [
             'name' => 'product_one',
-            'cost' => 100
+            'cost' => 100,
         ];
 
-        $response = $this->actingAs($this->admin)->postJson('/api/products', $product);;
+        $response = $this->actingAs($this->admin)->postJson('/api/products', $product);
 
         $response->assertJson(['result' => false])
             ->assertStatus(400);
@@ -83,10 +82,10 @@ class ProductTest extends TestCase
     {
         $product = [
             'name' => 'product_one',
-            'cost' => 10000
+            'cost' => 10000,
         ];
 
-        $response = $this->actingAs($this->admin)->postJson('/api/products', $product);;
+        $response = $this->actingAs($this->admin)->postJson('/api/products', $product);
 
         $response->assertJson(['result' => true])
             ->assertStatus(200);
@@ -98,7 +97,7 @@ class ProductTest extends TestCase
     {
         $productId = 1;
 
-        $response = $this->actingAs($this->admin)->getJson('/api/products/' . $productId);
+        $response = $this->actingAs($this->admin)->getJson('/api/products/'.$productId);
 
         $response->assertJson(['result' => false])
             ->assertStatus(404);
@@ -108,18 +107,17 @@ class ProductTest extends TestCase
     {
         $product = Product::factory()->create();
 
-        $response = $this->actingAs($this->admin)->getJson('/api/products/' . $product->id);
+        $response = $this->actingAs($this->admin)->getJson('/api/products/'.$product->id);
 
         $response->assertJson(['result' => true, 'data' => $product->toArray()])
             ->assertStatus(200);
-
     }
 
     public function test_api_products_update_wrong_id(): void
     {
         $productId = 1;
 
-        $response = $this->actingAs($this->admin)->putJson('/api/products/' . $productId, []);
+        $response = $this->actingAs($this->admin)->putJson('/api/products/'.$productId, []);
 
         $response->assertJson(['result' => false])
             ->assertStatus(404);
@@ -133,7 +131,7 @@ class ProductTest extends TestCase
 
         $newCost = $cost * 10;
 
-        $response = $this->actingAs($this->admin)->putJson('/api/products/' . $product->id, ['cost' => $newCost]);
+        $response = $this->actingAs($this->admin)->putJson('/api/products/'.$product->id, ['cost' => $newCost]);
 
         $product->cost = $newCost;
 
@@ -148,18 +146,17 @@ class ProductTest extends TestCase
     {
         $productId = 1;
 
-        $response = $this->actingAs($this->admin)->deleteJson('/api/products/' . $productId);
+        $response = $this->actingAs($this->admin)->deleteJson('/api/products/'.$productId);
 
         $response->assertJson(['result' => false])
             ->assertStatus(404);
     }
 
-
     public function test_api_products_delete(): void
     {
         $product = Product::factory()->create();
 
-        $response = $this->actingAs($this->admin)->deleteJson('/api/products/' . $product->id);
+        $response = $this->actingAs($this->admin)->deleteJson('/api/products/'.$product->id);
 
         $response->assertJson(['result' => true])
             ->assertStatus(200);

@@ -36,7 +36,7 @@ class ProductController extends Controller
     public function store(APICreateProductRequest $request)
     {
         $data = $request->all();
-        if($data['cost'] < self::Minimum_Product_Cost) {
+        if ($data['cost'] < self::Minimum_Product_Cost) {
             return APIResponse::makeFail(message: 'Minimum Cost Violation', errorCode: 400);
         }
 
@@ -50,9 +50,9 @@ class ProductController extends Controller
      */
     public function show(int $id)
     {
-        $product = Product::findOr($id, fn() => new Product());
+        $product = Product::findOr($id, fn () => new Product());
 
-        if(! isset($product->id)) {
+        if (! isset($product->id)) {
             return $this->notFoundResponse();
         }
 
@@ -72,9 +72,9 @@ class ProductController extends Controller
      */
     public function update(Request $request, int $id)
     {
-        $product = Product::findOr($id, fn() => new Product());
+        $product = Product::findOr($id, fn () => new Product());
 
-        if(! isset($product->id)) {
+        if (! isset($product->id)) {
             return $this->notFoundResponse();
         }
 
@@ -88,9 +88,9 @@ class ProductController extends Controller
      */
     public function destroy(int $id)
     {
-        $product = Product::findOr($id, fn() => new Product());
+        $product = Product::findOr($id, fn () => new Product());
 
-        if(! isset($product->id)) {
+        if (! isset($product->id)) {
             return $this->notFoundResponse();
         }
 

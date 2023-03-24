@@ -11,7 +11,6 @@ class APIResponse extends Response
         return self::make(false, ['message' => $message, 'errors' => $errors], $errorCode);
     }
 
-
     public static function makeSuccess($message, $data = [])
     {
         if (is_array($data)) {

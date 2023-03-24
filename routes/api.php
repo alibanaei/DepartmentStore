@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
 Route::group(['middleware' => ['auth:sanctum', 'role:admin']], function () {
     Route::apiResource('products', ProductController::class);
 });
