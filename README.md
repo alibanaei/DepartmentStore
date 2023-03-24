@@ -1,36 +1,43 @@
-Department Store Server
-This repository contains the code for the Department Store Server. To run the server locally, follow these steps:
+# Department Store Server
 
-Copy the .env.example file to .env using the following command:
+This repository contains the code for the Department Store Server. 
+## Running Locally
 
-bash
-Copy code
-cp .env.example .env
-Start the server and its dependencies using Docker Compose:
+To run the server locally, follow these steps:
 
-Copy code
-docker-compose up -d
-Access the container's shell using the following command:
+1. Copy the `.env.example` file to `.env` using the following command:
 
-bash
-Copy code
-docker exec -it DepartmentStoreServer bash
-Navigate to the app/ directory:
+    ```bash
+    cp .env.example .env
+    ```
 
-bash
-Copy code
-cd app/
-Install the required dependencies using Composer:
-
-Copy code
-composer install
-Run the database migrations:
-
-Copy code
-php artisan migrate
-Exit the container shell:
-
-bash
-Copy code
-exit
+2. Start the server and its dependencies using Docker Compose:
+    ```bash
+    docker-compose up -d
+    ```
+3. Access the container's shell using the following command:
+    ```bash
+    docker exec -it DepartmentStoreServer bash
+    ```
+   
+4. Navigate to the app/ directory:
+    ```bash
+    cd app/
+    ```
+   
+5. Install the required dependencies using Composer:
+     ```bash
+    composer install
+    ```
+   
+6. Run the database migrations:
+    ```bash
+    php artisan migrate
+    ```
+   
+7. Exit the container shell:
+    ```bash
+    exit
+    ```
+   
 After completing these steps, the Department Store Server should be running locally and ready to use.
