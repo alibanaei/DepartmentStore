@@ -1,0 +1,21 @@
+version: '3.3'
+services:
+    php-apache:
+        container_name: DepartmentStoreServer
+        volumes:
+            - ./:/app:delegated
+        ports:
+                - '0.0.0.0:80:80'
+        image: 'webdevops/php-apache:8.2'
+        links:
+            - 'mariadb:mariadb'
+    mariadb:
+        container_name: DepartmentStoreDB
+        environment:
+            - MYSQL_ROOT_PASSWORD=123
+            - MYSQL_DATABASE=laravel_test
+        ports:
+            - '0.0.0.0:3306:3306'
+        volumes:
+            - ./../mariadb:/var/lib/mysql
+        image: 'mariadb'
