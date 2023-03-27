@@ -15,11 +15,21 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::all();
+        $perPage = $request->get('per_page') ?? 10;
 
-        return APIResponse::makeSuccess(null, $products);
+        $items = Product::paginate($perPage);
+
+        $products = $items->items();
+
+        $links = [
+            'page' => $items->currentpage(),
+            'total' => $items->total(),
+            'perPage' => $items->perPage(),
+        ];
+
+        return APIResponse::makeSuccess(null, compact('products', 'links'));
     }
 
     /**

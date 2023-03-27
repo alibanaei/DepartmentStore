@@ -40,12 +40,44 @@ class ProductTest extends TestCase
         $response->assertStatus(403);
     }
 
+    public function test_api_products_empty_list(): void
+    {
+        $response = $this->actingAs($this->admin)->getJson('/api/products');
+
+        $response->assertStatus(200)->assertJson(['result' => true, 'data' => [
+            'products' => [],
+            'links' => [],
+        ]]);
+    }
+
     public function test_api_products_list(): void
     {
         $products = Product::factory(5)->create();
         $response = $this->actingAs($this->admin)->getJson('/api/products');
 
-        $response->assertJson(['result' => true, 'data' => $products->toArray()]);
+        $response->assertStatus(200)->assertJson(['result' => true, 'data' => ['products' => $products->toArray()]]);
+    }
+
+    public function test_api_products_list_with_pagination(): void
+    {
+        $totalProducts = 12;
+        $page = 2;
+        $perPage = 5;
+        $skip = ($page - 1) * $perPage;
+
+        $products = Product::factory($totalProducts)->create();
+
+        $response = $this->actingAs($this->admin)->getJson('/api/products?page='.$page.'&per_page='.$perPage);
+
+        $response->assertStatus(200)->assertJson(['result' => true, 'data' => [
+            'products' => array_values($products->skip($skip)->take($perPage)->toArray()),
+            'links' => [
+                'page' => $page,
+                'total' => $totalProducts,
+                'perPage' => $perPage,
+            ],
+        ],
+        ]);
     }
 
     public function test_api_products_create_name_failed(): void
@@ -133,7 +165,7 @@ class ProductTest extends TestCase
 
         $response = $this->actingAs($this->admin)->putJson('/api/products/'.$product->id, ['cost' => $newCost]);
 
-        $product->cost = $newCost;
+        $product->refresh();
 
         $response->assertJson(['result' => true, 'data' => $product->toArray()])
             ->assertStatus(200);
